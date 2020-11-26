@@ -250,8 +250,11 @@ engDict = {
 }
 
 """Load the Data"""
-# Read the translated, combined responses csv file skipping the column header row.
-df = pd.read_csv("dataBeta.csv")
+# Read the previous data
+prevData = pd.read_csv("PreviousVWCData.csv")
+
+# Read the recent translated, combined responses csv file
+df = pd.read_csv("RecentVWCData.csv")
 
 # Remove the Interest column (In Beta Mode)
 df = df.iloc[:, :6]
@@ -267,6 +270,23 @@ display(df)
 
 # Make a copy of df
 dfCopy = df.copy()
+
+
+# In[ ]:
+
+
+"""Remove people who have already been matched"""
+# For all the rows in prevData
+# Note that the recent data will have more rows than the previous data 
+# and will have the same indices for overlapping entries
+for i in range(len(prevData)):
+    
+    # If the person was matched previously 
+    # the matched columns said yes and the email matches
+    if (prevData.iat[i, 6] == "Yes" & prevData.iat[i, 0] == dfCopy.iat[i, 0]):
+        
+        # Delete that row from the recent data
+        dfCopy = dfCopy.drop([i])
 
 
 # In[ ]:
@@ -734,6 +754,31 @@ Secrétariat de l’innovation""".format(pair.iat[0, 1],  pair.iat[1, 1], # Name
     
     # Send the emails
     #email(recipients, "Virtual Water Cooler", message)
+
+
+# In[ ]:
+
+
+"""Track Matches and No Matches"""
+# Create a master data frame for the people who were not matched
+unmatched = pd.concat(noMatches)
+
+# Empty list that will store if a person is matched or not
+m = []
+
+# For the length of the data frame
+for i in range(len(df)):
+    
+    # Add No (not matched) if the person from
+    m.append("No" if df.iloc[[i]].isin(unmatched).iat[0,0] == True else "Yes")
+
+# Create a new column that says whether a person is matched or not
+df['Matched'] = m
+
+display(df)
+
+# Write to csv file
+df.to_csv(r'PreviousVWCData.csv', index=False)
 
 
 # In[ ]:
