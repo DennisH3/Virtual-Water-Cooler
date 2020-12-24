@@ -23,7 +23,7 @@ assert interests_min >= 0
 
 # The maximum number of interests to generate
 # Must be greater or equal to the minimum amount
-interests_max = 0
+interests_max = 15
 
 assert interests_max >= interests_min
 
