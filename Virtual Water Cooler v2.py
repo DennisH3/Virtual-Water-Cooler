@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[43]:
 
 
 # Pip Installs
@@ -12,7 +12,7 @@
 #!python -m spacy download en_core_web_lg
 
 
-# In[ ]:
+# In[44]:
 
 
 """Initialization"""
@@ -30,7 +30,7 @@ import en_core_web_lg
 nlp = en_core_web_lg.load()
 
 
-# In[ ]:
+# In[45]:
 
 
 """Dictionaries"""
@@ -66,7 +66,7 @@ colname_dict = {
 }
 
 
-# In[ ]:
+# In[46]:
 
 
 """Helper Functions"""
@@ -187,7 +187,7 @@ def temps(pair):
         return "la Matinée ou l'Après-midi"
 
 
-# In[ ]:
+# In[47]:
 
 
 """Load the Data"""
@@ -199,7 +199,7 @@ dfEng = pd.read_csv("EngResponsesBeta.csv")
 dfFr = pd.read_csv("FrResponsesBeta.csv")
 
 
-# In[ ]:
+# In[48]:
 
 
 """Translate from French to English"""
@@ -238,7 +238,7 @@ df = df.rename(colname_dict, axis=1).drop_duplicates(subset=['email'], keep='las
 display(df)
 
 
-# In[ ]:
+# In[49]:
 
 
 """Match Making Algorithm"""
@@ -285,7 +285,7 @@ def matchMaking(df):
     return match_successes, unmatched_df
 
 
-# In[ ]:
+# In[91]:
 
 
 # Function to find common interests
@@ -326,13 +326,19 @@ def common_interests(df):
         if (len(i1) <= len(i2)):
             for i in range(len(i1)):
                 for j in range(len(i2)):
-                    if (nlp(i1[i]).similarity(nlp(i2[j])) >= 0.6):
-                        commonInterests.append(i1[i])
+
+                    # Skip blank characters
+                    if (nlp(i1[i]).vector_norm and nlp(i2[j]).vector_norm):
+                        if (nlp(i1[i]).similarity(nlp(i2[j])) >= 0.6):
+                            commonInterests.append(i1[i])
         else:
             for i in range(len(i2)):
                 for j in range(len(i1)):
-                    if (nlp(i2[i]).similarity(nlp(i1[j])) >= 0.6):
-                        commonInterests.append(i2[i])
+
+                    # Skip blank characters
+                    if (nlp(i1[j]).vector_norm and nlp(i2[i]).vector_norm):
+                        if (nlp(i2[i]).similarity(nlp(i1[j])) >= 0.6):
+                            commonInterests.append(i2[i])
 
         # Remove duplicate words
         commonInterests = set(commonInterests)
@@ -342,10 +348,17 @@ def common_interests(df):
             return "Your common interests are: " + ','.join(commonInterests)
         else:
             # Else the commonInterests list is empty, combine their interests
-            return "Your common interests are: " + ','.join(i1 + i2)
+            commonInterests = (i1 + i2)
+
+            # Remove blank spaces
+            commonInterests[:] = [x for x in commonInterests if x.strip()]
+
+            print(commonInterests)
+
+            return "Your common interests are: " + ','.join(commonInterests)
 
 
-# In[ ]:
+# In[92]:
 
 
 """Match Making"""
@@ -519,15 +532,21 @@ else:
     newDF = newDF.rename({v:k for k, v in colname_dict.items()}, axis=1)
 
     # Display
-    display(newDF)
+    # display(newDF)
 
     # Overwrite prevVWCData.csv
     newDF.to_csv("./prevVWCData.csv", index=False)
 
 
-# In[ ]:
+# In[56]:
 
 
 # Convert jupyter notebook to python script
-get_ipython().system('jupyter nbconvert --to script config_template.ipynb')
+get_ipython().system('jupyter nbconvert --to script "Virtual Water Cooler v2.ipynb"')
+
+
+# In[ ]:
+
+
+
 
