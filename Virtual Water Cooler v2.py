@@ -353,8 +353,6 @@ def common_interests(df):
             # Remove blank spaces
             commonInterests[:] = [x for x in commonInterests if x.strip()]
 
-            print(commonInterests)
-
             return "Your common interests are: " + ','.join(commonInterests)
 
 
