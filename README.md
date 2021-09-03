@@ -1,11 +1,21 @@
 [(Français)](#le-nom-du-projet)
 
-## Name of the project
+# Virtual Water Cooler
 
-- What is this project?
-- How does it work?
-- Who will use this project?
-- What is the goal of this project?
+The Virtual Water Cooler (VWC) aims to mitigate some of the disconnect many feel from remote work by having employees sign up through a Google Forms (bilingual) and then automatically being paired and notified through email. 
+It is a two-part program: pair matching and email automation.
+
+The code can be modified to create pairs from different forms and different requirements or form groups larger than pairs.
+
+## Files
+
+### Main program
+- Virtual Water Cooler v2.py: merges the English and French responses and creates pairs based on time and language preferences. Additionally, it outputs a list of the pairs' common interests.
+- VWCemail.py: automates sending emails per matched pair
+
+### Translation
+- google_trans_new.py: the package that translates French responses to English, and English results to French. It is included here as the most recent version which fixes a bug has not been published to PyPi
+- constant.py: dependency for google_trans_new.py
 
 ### How to Contribute
 
